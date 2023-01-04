@@ -1,11 +1,13 @@
-package com.nevitoniuri.authapi.auth;
+package com.nevitoniuri.authapi.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
 
-@Builder
-public record AuthenticationRequest(
+public record UserCreate(
+        @NotBlank
+        String firstName,
+        @NotBlank
+        String lastName,
         @Email
         @NotBlank
         String email,

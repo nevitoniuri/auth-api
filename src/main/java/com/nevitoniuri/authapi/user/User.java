@@ -30,12 +30,12 @@ public class User implements UserDetails {
     @Column(name = "last_name")
     private String lastname;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     private String email;
 
     private String password;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,5 +1,6 @@
 package com.nevitoniuri.authapi.auth;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,13 +14,8 @@ public class AuthenticationController {
 
     private final AuthenticationService service;
 
-    @PostMapping("register")
-    public AuthenticationResponse register(@RequestBody RegisterRequest request) {
-        return service.register(request);
-    }
-
-    @PostMapping("authenticate")
-    public AuthenticationResponse aunthenticate(@RequestBody AuthenticationRequest request) {
-        return service.aunthenticate(request);
+    @PostMapping
+    public AuthenticationResponse authenticate(@RequestBody @Valid AuthenticationRequest request) {
+        return service.authenticate(request);
     }
 }
