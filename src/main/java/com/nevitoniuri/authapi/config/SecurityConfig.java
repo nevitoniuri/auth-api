@@ -1,6 +1,5 @@
 package com.nevitoniuri.authapi.config;
 
-import com.nevitoniuri.authapi.user.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,13 +21,23 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.authorizeHttpRequests().requestMatchers("/auth/**").permitAll();
-        http.authorizeHttpRequests().requestMatchers(HttpMethod.POST, "/users").hasAuthority(Role.ADMIN.name());
-        http.authorizeHttpRequests().requestMatchers(HttpMethod.GET, "/users/").permitAll();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeHttpRequests().anyRequest().authenticated();
-        http.authenticationProvider(authenticationProvider).addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
+        return http
+                .csrf().disable()
+                .httpBasic().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(authorizeConfig -> {
+                    authorizeConfig.requestMatchers(HttpMethod.GET, "/users/**").permitAll();
+                    authorizeConfig.requestMatchers(HttpMethod.POST, "/users/**").hasAuthority("ADMIN");
+                    authorizeConfig.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
+                    authorizeConfig.anyRequest().authenticated();
+                })
+                .build();
     }
+
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**").allowedMethods("*");
+//    }
 }
